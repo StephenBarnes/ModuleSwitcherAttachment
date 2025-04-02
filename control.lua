@@ -77,7 +77,9 @@ local function handleMachineBuilt(ent)
 	local neighboringEnts = getNeighboringEnts(ent)
 	for _, neighboringEnt in ipairs(neighboringEnts) do
 		if neighboringEnt.name == "module-attachment" and neighboringEnt.type == "proxy-container" then
-			if neighboringEnt.proxy_target_entity == nil then -- If the attachment is already linked to a different entity, don't overwrite.
+			local proxyTargetEntity = neighboringEnt.proxy_target_entity
+			local isLinked = (proxyTargetEntity ~= nil) and (proxyTargetEntity.valid)
+			if not isLinked then -- If the attachment is already linked to a different entity that hasn't been removed, don't overwrite.
 				neighboringEnt.proxy_target_entity = ent
 				neighboringEnt.proxy_target_inventory = inventoryId
 				-- Don't return, so we can link with other attachments too.
